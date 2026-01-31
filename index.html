@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KING CHEATS - OFFICIAL</title>
+    <style>
+        /* DESIGN PREMIUM IDENTICO ÀS FOTOS */
+        body, html { margin: 0; padding: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; height: 100%; }
+        #matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.2; }
+        
+        .container { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        
+        .box { 
+            background: #000; 
+            border: 1px solid #fff; 
+            padding: 40px 20px; 
+            width: 340px; 
+            text-align: center; 
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); /* Glow das fotos */
+            position: relative;
+        }
+
+        h1 { font-size: 26px; letter-spacing: 5px; margin: 0; font-weight: bold; text-transform: uppercase; }
+        .line { width: 100%; height: 1px; background: #fff; margin: 15px 0; }
+        .subtitle { font-size: 9px; color: #666; letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase; }
+        
+        input, select { 
+            width: 85%; padding: 15px; margin: 10px 0; 
+            background: #000; border: 1px solid #fff; color: #fff; 
+            text-align: center; outline: none; font-family: 'Courier New', monospace; font-size: 13px;
+        }
+
+        .btn-white { 
+            width: 95%; padding: 15px; background: #fff; color: #000; 
+            border: none; font-weight: bold; cursor: pointer; 
+            text-transform: uppercase; margin-top: 10px; font-size: 13px;
+        }
+
+        .error-box { 
+            width: 95%; margin: 15px auto 0; padding: 10px 0;
+            border: 1px solid #ff4444; color: #ff4444; 
+            font-size: 10px; display: none; text-transform: uppercase;
+        }
+
+        .footer { margin-top: 30px; font-size: 12px; letter-spacing: 3px; font-weight: bold; text-transform: uppercase; }
+        
+        #admin-link { color: #333; font-size: 8px; text-decoration: none; position: absolute; bottom: 10px; right: 10px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+
+    <div class="container">
+        <div id="login-screen" class="box">
+            <h1>KING CHEATS</h1>
+            <div class="line"></div>
+            <div id="sub-text" class="subtitle">SISTEMA ANTI-COMPARTILHAMENTO ATIVO</div>
+            
+            <input type="text" id="access-input" placeholder="INSIRA SUA KEY">
+            <input type="password" id="pass-admin" placeholder="SENHA MODO ADMIN" style="display:none;">
+            
+            <button id="btn-auth" class="btn-white" onclick="validar()">LOGAR NO DISPOSITIVO</button>
+            
+            <div id="error-alert" class="error-box">KEY INVÁLIDA OU INEXISTENTE!</div>
+            
+            <div style="margin-top: 25px;">
+                <a href="#" style="color:#666; font-size:10px; text-decoration:none; text-transform: uppercase;">ADQUIRIR ACESSO</a>
+            </div>
+            
+            <div class="footer">BY KING CHEATS</div>
+            <a href="#" id="admin-link" onclick="ativarAdmin()">MODO ADMIN</a>
+        </div>
+
+        <div id="admin-panel" class="box" style="display:none;">
+            <h1>GENERATOR</h1>
+            <div class="line"></div>
+            <div class="subtitle">SELECT YOUR SYSTEM</div>
+            
+            <select id="days-select">
+                <option value="1">1 DIA (TRIAL)</option>
+                <option value="5">5 DIAS (BASIC)</option>
+                <option value="10">10 DIAS (PRO)</option>
+                <option value="30">30 DIAS (VIP)</option>
+            </select>
+            
+            <button class="btn-white" onclick="criarKey()">GERAR SENSIBILIDADE</button>
+            
+            <div id="key-result" style="margin-top:20px; border:1px dashed #fff; padding:10px; display:none;">
+                <span style="font-size:9px; color:#888;">KEY GERADA:</span><br>
+                <b id="display-key" style="font-size:16px; color:#fff;"></b>
+            </div>
+            
+            <button onclick="location.reload()" style="background:transparent; color:#fff; border:1px solid #fff; margin-top:20px; padding:10px; width:95%; cursor:pointer; font-size:10px;">VOLTAR AO LOGIN</button>
+        </div>
+    </div>
+
+    <script>
+        // EFEITO MATRIX FUNDO
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const alphabet = "01KINGCHEATS";
+        const fontSize = 12;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#fff"; ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35);
+
+        // LOGICA DE ACESSO
+        let adminAtivo = false;
+
+        function ativarAdmin() {
+            adminAtivo = true;
+            document.getElementById('pass-admin').style.display = 'block';
+            document.getElementById('access-input').placeholder = "USUÁRIO ADMIN";
+            document.getElementById('sub-text').innerText = "PAINEL DE CONTROLE ADMINISTRATIVO";
+            document.getElementById('btn-auth').innerText = "ACESSAR GERADOR";
+        }
+
+        function validar() {
+            const input = document.getElementById('access-input').value.trim();
+            const pass = document.getElementById('pass-admin').value.trim();
+
+            if (adminAtivo) {
+                // Senha que você definiu: ADMIN / KING
+                if (input === "ADMIN" && pass === "KING") {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('admin-panel').style.display = 'block';
+                } else {
+                    mostrarErro("LOGIN ADMIN INCORRETO!");
+                }
+            } else {
+                // Carrega o banco de dados atualizado na hora do clique
+                const keysDB = JSON.parse(localStorage.getItem('king_keys_v2') || '{}');
+                
+                if (keysDB[input]) {
+                    alert("SUCESSO! ACESSO LIBERADO POR " + keysDB[input] + " DIAS.");
+                    // Aqui você colocaria o código da sua tela de SENSI (Imagem 1)
+                } else {
+                    mostrarErro("KEY INVÁLIDA OU INEXISTENTE!");
+                }
+            }
+        }
+
+        function criarKey() {
+            const dias = document.getElementById('days-select').value;
+            // Gera 6 caracteres aleatórios
+            const cod = Math.random().toString(36).substr(2, 6).toUpperCase();
+            const novaKey = "KEY_" + cod;
+            
+            // Grava no banco de dados local
+            let db = JSON.parse(localStorage.getItem('king_keys_v2') || '{}');
+            db[novaKey] = dias;
+            localStorage.setItem('king_keys_v2', JSON.stringify(db));
+
+            document.getElementById('key-result').style.display = 'block';
+            document.getElementById('display-key').innerText = novaKey;
+        }
+
+        function mostrarErro(txt) {
+            const box = document.getElementById('error-alert');
+            box.innerText = txt;
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 3000);
+        }
+    </script>
+</body>
+</html>
